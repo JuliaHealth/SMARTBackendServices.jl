@@ -1,0 +1,36 @@
+test_private_key_contents = """
+-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEAwaj5gy1tKhNCXYsw5awTpg/SrIgniRWiHQYvwYrjBMTzWDwi
+wa7ZqJ/tcLCMxey8d6LkxVramchb6FGlYt6Qao2rPe4xmH1v3wzgfV8HrmS3oFr9
+xp4N6y8rkVw1oVHlv7sPNmU7sc/1i+HqSQLJkzUqcBjz5SC1lzvexgqougrxu5Mf
+it6ApdauE88K/nHUNKv/93Yj3BgzL+AVSDIA/o9lxEYyYFY034hQEXiMA47g/PSX
+JmRpfCYhZPo4JcFpJaHLcxYalYTxdnT/9x0giAD3kseYrm8fL+pCCqLeXiEYZ1pk
+Ff6usaraTjKlbdyKgfm/ndW7rZWsmBEEE+BE0QIDAQABAoIBAETi5l5S+lHNJ/4+
+VNZdr1+SoU3d4LJSj6fjW3ls/fPkWus3+OUMXUAuIzfClVCSNTgZKWdKOhgZvReW
+c04H/Tbpzc/pupqThAfDfNcbxo+yI99Wfo74CdtunADI3ArWJvNchrzCpclKP/3S
+DpSJ+Unzz3Swa5FFYVK6aTPo9ru2Kjv8U4boiwwla8RrSjPGHV2RnIj246m+bFGG
+jvYxZJCIVZPFjhQYOGyvrtEsBXUsNCAkxMdeMgGb3i3DRZP0Mn06gspGDQ9EL7ZU
+0LSUFcNPB+1GrG0QIDAuRx8diAFwr1/T7zcpMh4bYbjyGCpvMB9V7/qDloPEXxUD
+DcsGBkECgYEA69HoHOSDSEo53XZvzNd+uSz5NUe7ksentV2fSDh2fouqjID0875L
+C1YetJpKTLLj4ezQ0MENOo9EOax5q05c8x8tzDqewKKk1bVAbhhZ6H1ReDUwSJR6
+hgqQ8H7dTOKlx2mhFwAq04ZA9RsjOyfb2gbWXTK8UWJx9Rtn705VyM8CgYEA0jt5
+SqcaMDlYYRxUA00/4CECzTSy32/IRtOgjdgH0oxnrkIkEYwC8UH85W1l314tyxhM
+1eZzMWMnfG+Ru3/I5Ibs4XlhIddGuwCVqBTTnxk3Xl+3AjlEv8wbvfvRyhH207V5
+LgojhgyEbaxt7nDLKNqnhWDeixG9mgqa/np5QF8CgYEAg71sMlfmj4gH85SquIDa
+ppBdWEqOm102b7exuCLy75cO3BdewJxaSCcAWFypjVeSvzARJ83xmflXX/Det7i7
+bIbKiwFklrFF7K2pJNgtwhfgX4s3QhTQrflRJ0l4T+9+NXzpJXROeITT3RogAHgv
+9glD0CT712trxkZdNe9JNTkCgYA23sD0hBKovX7csbkXt4TRaaxChNuex50dJ0UD
+YHwCLxUsfSTO0508/L0V4GyzVPBczrXXKjOskzWOG8yMhHiZdMHEw5pfa8GRM0Dc
+QrtNDhbOcerhELNp38rp1hzWQcQLU5USOCE3bnLt8RAsKJJN0mvguvy6jWHQH65+
+dtbIvwKBgQCzuaM2U50rGRgzFVzkCNEf6HCgKbFei31TeXvgb4VrhJ3Tu+RmPXJH
+GS2zLFh88/2D1f88F6jr2M5G601vJjAQPypDGw4RHJtsS+KjAw8TjAYr/M2f1dco
+HpUHZbGip3HcM84jooRnYlyhQTMiJhXxuno3xRqLGUfinpwqqyB6YA==
+-----END RSA PRIVATE KEY-----
+"""
+
+test_private_key = joinpath(mktempdir(), "test_private_key.pem")
+
+open(test_private_key, "w") do io
+    s = convert(String, strip(test_private_key_contents))::String
+    println(io, s)
+end
