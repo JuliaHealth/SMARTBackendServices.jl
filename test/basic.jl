@@ -14,7 +14,7 @@ smart_result = backend_services(smart_config)
 
 @test smart_result isa SMARTBackendServices.BackendServicesResult
 
-access_token = get_access_token(smart_result)
+access_token = get_fhir_access_token(smart_result)
 
 @test access_token isa AbstractString
 

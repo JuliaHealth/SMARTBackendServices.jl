@@ -26,8 +26,8 @@ Base.@kwdef struct BackendServicesResult
 end
 
 """
-    get_access_token(result::BackendServicesResult)
+    HealthBase.get_fhir_access_token(result::BackendServicesResult)
 """
-function get_access_token(result::BackendServicesResult)
-    return result.access_token::String
+function HealthBase.get_fhir_access_token(result::BackendServicesResult)
+    return result.access_token
 end
