@@ -6,7 +6,6 @@ import HealthBase
 import JSON3
 import JWTs
 import Random
-import TimeZones
 import URIs
 
 const get_fhir_access_token = HealthBase.get_fhir_access_token
@@ -19,6 +18,5 @@ include("types.jl")
 
 include("backend_services.jl")
 include("jwt.jl")
-include("timestamps.jl")
 
 end # module

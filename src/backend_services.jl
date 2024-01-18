@@ -1,14 +1,16 @@
-function _backend_services_create_jwt(config::BackendServicesConfig)
+function _backend_services_create_jwt(config::BackendServicesConfig, token_endpoint::AbstractString)
+    # Random string that uniquely identifies the JWT
     jti = Random.randstring(150)
 
-    now = TimeZones.now(TimeZones.localzone())
-    expiration_time = now + Dates.Minute(4)
-    expiration_time_seconds_since_epoch_utc = integer_seconds_since_the_epoch_utc(expiration_time)
-
+    # Expiration time (integer) in seconds since "epoch"
+    # SHALL be no more than 5 minutes in the future
+    expiration_time = Dates.now(Dates.UTC) + Dates.Minute(4)
+    expiration_time_seconds_since_epoch_utc = round(Int, Dates.datetime2unix(expiration_time))
+    
     jwt_payload_claims_dict = Dict(
-        "iss" => config.iss,
-        "sub" => config.sub,
-        "aud" => config.token_endpoint,
+        "iss" => config.client_id,
+        "sub" => config.client_id,
+        "aud" => token_endpoint,
         "jti" => jti,
         "exp" => expiration_time_seconds_since_epoch_utc,
     )
@@ -26,29 +28,45 @@ function _backend_services_create_jwt(config::BackendServicesConfig)
     return string(jwt)
 end
 
+# Ref: https://www.hl7.org/fhir/smart-app-launch/backend-services.html
 """
     backend_services(config::BackendServicesConfig)
 """
 function backend_services(config::BackendServicesConfig)
-    jwt = _backend_services_create_jwt(config)
+    # Retrieve the server configuration
+    # Ref: https://www.hl7.org/fhir/smart-app-launch/backend-services.html#retrieve-well-knownsmart-configuration
+    _config_response = HTTP.request(
+        "GET",
+        joinpath(config.base_url, ".well-known/smart-configuration");
+        # In principle, it should be possible to omit the header
+        # (and servers may ignore it anyway)
+        # Ref: https://www.hl7.org/fhir/smart-app-launch/conformance.html#using-well-known
+        headers = ("Accept" => "application/json",),
+    )
+    config_response = JSON3.read(_config_response.body)
+    token_endpoint = get(config_response, :token_endpoint) do
+        throw(ArgumentError("SMART configuration: `token_endpoint` is not specified"))    
+    end::String
+
+    # Obtain the access token
+    # Ref: https://www.hl7.org/fhir/smart-app-launch/backend-services.html#obtain-access-token
+    # Create JWT
+    jwt = _backend_services_create_jwt(config, token_endpoint)
 
     body_params = Dict{String, String}()
     body_params["grant_type"] = "client_credentials"
     body_params["client_assertion_type"] = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
     body_params["client_assertion"] = jwt
-
-    if config.scope !== nothing
-        body_params["scope"] = config.scope
-    end
+    body_params["scope"] = config.scope
 
     _response = HTTP.request(
         "POST",
-        config.token_endpoint;
-        headers = Dict("Content-Type" => "application/x-www-form-urlencoded"),
+        token_endpoint;
+        headers = ("Content-Type" => "application/x-www-form-urlencoded",),
         body = URIs.escapeuri(body_params),
     )
 
-    access_token_response = JSON3.read(String(_response.body))
+    access_token_response = JSON3.read(_response.body)
     access_token = access_token_response.access_token
 
     access_token_is_jwt, access_token_jwt_decoded = try_decode_jwt(access_token)

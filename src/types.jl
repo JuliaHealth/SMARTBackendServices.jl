@@ -2,22 +2,20 @@
     BackendServicesConfig{T <: JWTs.JWK}(; kwargs...)
 
 ## Required Keyword Arguments:
-- `iss::String`
+- `base_url`::String
+- `client_id::String`
+- `scope::String`
 - `key::T`
-- `sub::String`
-- `token_endpoint::String`
 
-## Optional Keyword Arguments:
-- `scope::Union{String, Nothing}`. Default value: `nothing`.
+## Optional Keyword Argument:
 - `keyid::Union{String, Nothing}`. Default value: `nothing`.
 """
 Base.@kwdef struct BackendServicesConfig{T <: JWTs.JWK}
-    iss::String
+    base_url::String
+    client_id::String
+    scope::String
     key::T
     keyid::Union{String, Nothing} = nothing
-    scope::Union{String, Nothing} = nothing
-    sub::String
-    token_endpoint::String
 end
 
 Base.@kwdef struct BackendServicesResult
