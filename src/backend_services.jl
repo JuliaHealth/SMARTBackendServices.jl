@@ -12,9 +12,18 @@ function _backend_services_create_jwt(config::BackendServicesConfig)
         "jti" => jti,
         "exp" => expiration_time_seconds_since_epoch_utc,
     )
-    jwt = JSONWebTokens.encode(config.private_key, jwt_payload_claims_dict)
+    jwt = JWTs.JWT(; payload = jwt_payload_claims_dict)
 
-    return jwt
+    # Sign
+    if config.keyid === nothing
+        JWTs.sign!(jwt, config.key)
+    else
+        JWTs.sign!(jwt, config.key, config.keyid)
+    end
+    @assert JWTs.issigned(jwt)
+    @assert config.keyid === nothing || JWTs.kid(jwt) == config.keyid
+
+    return string(jwt)
 end
 
 """

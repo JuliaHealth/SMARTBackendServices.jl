@@ -1,7 +1,10 @@
 using SMARTBackendServices
 using Test
 
-import JSONWebTokens
+import JSON3
+import JWTs
+import HTTP
+import MbedTLS
 
 include("test_private_key/create.jl")
 

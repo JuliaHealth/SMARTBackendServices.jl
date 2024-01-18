@@ -4,7 +4,7 @@ import Dates
 import HTTP
 import HealthBase
 import JSON3
-import JSONWebTokens
+import JWTs
 import Random
 import TimeZones
 import URIs
