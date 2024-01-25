@@ -1,3 +1,6 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 SMARTBackendServices = "78af60b6-7677-4c75-8291-bd270d1b4390"
+
+[compat]
+Documeter = "1"
