@@ -33,16 +33,16 @@ keyid, key = only(keyset.keys)
 key = JWTs.JWKRSA(key.kind, MbedTLS.parse_keyfile(joinpath(@__DIR__, "key", "private.pem")))
 
 smart_config = BackendServicesConfig(; base_url, client_id, key, keyid, scope)
+smart_config_wo_keyid = BackendServicesConfig(; base_url, client_id, key, scope)
 
-smart_result = backend_services(smart_config)
+for smart_config in (smart_config, smart_config_wo_keyid)
+    smart_result = backend_services(smart_config)
+    @test smart_result isa SMARTBackendServices.BackendServicesResult
 
-@test smart_result isa SMARTBackendServices.BackendServicesResult
-
-access_token = get_fhir_access_token(smart_result)
-
-@test access_token isa AbstractString
-
-@test length(access_token) > 1
+    access_token = get_fhir_access_token(smart_result)
+    @test access_token isa AbstractString
+    @test length(access_token) > 1
+end
 
 @testset "token_endpoint" begin
     # Correct settings
