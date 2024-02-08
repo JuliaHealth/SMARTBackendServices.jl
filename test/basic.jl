@@ -32,13 +32,7 @@ JWTs.refresh!(keyset)
 keyid, key = only(keyset.keys)
 key = JWTs.JWKRSA(key.kind, MbedTLS.parse_keyfile(joinpath(@__DIR__, "key", "private.pem")))
 
-smart_config = BackendServicesConfig(;
-    base_url,
-    client_id,
-    key,
-    keyid,
-    scope,
-)
+smart_config = BackendServicesConfig(; base_url, client_id, key, keyid, scope)
 
 smart_result = backend_services(smart_config)
 
@@ -49,3 +43,17 @@ access_token = get_fhir_access_token(smart_result)
 @test access_token isa AbstractString
 
 @test length(access_token) > 1
+
+@testset "token_endpoint" begin
+    # Correct settings
+    token_endpoint_wellknown = SMARTBackendServices._token_endpoint_wellknown(smart_config)
+    @test token_endpoint_wellknown isa String
+    token_endpoint_metadata = SMARTBackendServices._token_endpoint_metadata(smart_config)
+    @test token_endpoint_metadata isa String
+    @test token_endpoint_metadata === token_endpoint_wellknown
+
+    # Incorrect base url
+    config = BackendServicesConfig(; base_url = "https://google.com", client_id, key, keyid, scope)
+    @test SMARTBackendServices._token_endpoint_wellknown(config) === nothing
+    @test SMARTBackendServices._token_endpoint_metadata(config) === nothing
+end
