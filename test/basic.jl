@@ -56,4 +56,5 @@ access_token = get_fhir_access_token(smart_result)
     config = BackendServicesConfig(; base_url = "https://google.com", client_id, key, keyid, scope)
     @test SMARTBackendServices._token_endpoint_wellknown(config) === nothing
     @test SMARTBackendServices._token_endpoint_metadata(config) === nothing
+    @test_throws ErrorException("SMART configuration: Violation of the FHIR specification. The FHIR server does neither convey its SMART capabilities using a Well-Known Uniform Resource Identifiers (URIs) JSON file nor its CapabilityStatement.") backend_services(config)
 end
