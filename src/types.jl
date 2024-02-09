@@ -6,16 +6,14 @@
 - `client_id::String`
 - `scope::String`
 - `key::T`
-
-## Optional Keyword Argument:
-- `keyid::Union{String, Nothing}`. Default value: `nothing`.
+- `keyid::String`
 """
 Base.@kwdef struct BackendServicesConfig{T <: JWTs.JWK}
     base_url::String
     client_id::String
     scope::String
     key::T
-    keyid::Union{String, Nothing} = nothing
+    keyid::String
 end
 
 Base.@kwdef struct BackendServicesResult

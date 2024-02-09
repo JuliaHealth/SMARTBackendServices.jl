@@ -17,13 +17,9 @@ function _backend_services_create_jwt(config::BackendServicesConfig, token_endpo
     jwt = JWTs.JWT(; payload = jwt_payload_claims_dict)
 
     # Sign
-    if config.keyid === nothing
-        JWTs.sign!(jwt, config.key)
-    else
-        JWTs.sign!(jwt, config.key, config.keyid)
-    end
+    JWTs.sign!(jwt, config.key, config.keyid)
     @assert JWTs.issigned(jwt)
-    @assert config.keyid === nothing || JWTs.kid(jwt) == config.keyid
+    @assert JWTs.kid(jwt) == config.keyid
 
     return string(jwt)
 end
