@@ -18,7 +18,7 @@
 # 3. Specify a key id (or let it be generated automatically)
 # 4. Check "Show X.509"
 # 5. Press "Generate"
-# 6. Insert the public key (in JSON format) in the "keys" array in ./key/public_jwkset.json
+# 6. Update the `keyid` below
 # 7. Save the private key (in X.509 format) as ./key/private.pem
 
 # Settings of the registered client
@@ -26,11 +26,9 @@ base_url = "https://launch.smarthealthit.org/v/r4/sim/WzQsIiIsIiIsIiIsMCwwLDAsIn
 client_id = "3n43riWosf7geBkZBuybgvH3MZ7XHCnsQ2w60TIl51kvCohhypVi76GKjPcYZqeKww5xghfkXON9CWZe24dcD51vgFsxQpWyKu231uazer9562RAUvTFY9Qmswad33zvXomNT9WpAfNvtNcvhOzOwdrZZ1mYCV5pHfZYYXJHvPz7mnGvrnnvHUW1VAMayZf38dM8cY3M7v5hhb2OXabgtXBTabx8Ho2rGOcaKZGcDpds8kfcaIfDJIoJD6F72MCS2PpB8UoM2tsJFANMwUCiTEoMnluu3JbPOkfy5HvcepmXaVfC5PeyF7LLTHg8ePTP1WQXODudt8biepUmdsv9eT3JmPYIw4KCnGlLvO8WFKrQqwz18KO4DjScHILUjQzDfGGjjXBUZ5v6mKoHuvEyI1ijBCPp4NvP29cEUQjcxHI22SKnkVfLXEK7w1mdRlvjAFOuMvJoERMb9Hg63OP3iGBn112r0XUhHjGuzEb9hNc63kkUXIHkDqD1PKaTxoRq1afGsta4Itr36mJQT4OwcwelKuX2F32guPzovGA5wIbG5I6iopp6a7inIeIgg84wH5DVPwRGr5Tr4GBtxphtnSr9tWzDA0noX9VhF4AehYMdG2xtbVGmkERRs0PKGHpQUYXZ7YDkxkzKwnveok4lJS73fRitWcgBZi1TaVWZPOVs2rlXVDW57k87h1rzaofgvYFpfGOdfHmP87o2VXAQ8XYnW8THoLxwcdICnV9mY0xZ8YnuKR38XvEiPlxax5ZF77YQ5sPbFy53Ru6Ci2Dly6vU9quuTVK3MJaQI1IUfRqLQFwUivtXl7iFDH0mPWQUs5skRzXKQEcnLVR2fU0TVt39MX5WnSPgoeNVwxt84hsseOKbFJzZmGXSjScbFLDqUN3DKH07KHKOs0eMIYGw0dnnlvjlQM4NTlgTyogIfgBwLfCeXuTdEHBXkImNCDDqNKsxVS9irVCWvZcDTxjrY7nt1fPW3WoGfGVjxm2q5ao71bmMHIrxHuuOwk1G1C1z"
 scope = "system/*.rs"
 
-# Signing key
-keyset = JWTs.JWKSet("file://$(@__DIR__)/key/public_jwkset.json")
-JWTs.refresh!(keyset)
-keyid, key = only(keyset.keys)
-key = JWTs.JWKRSA(key.kind, MbedTLS.parse_keyfile(joinpath(@__DIR__, "key", "private.pem")))
+# Signing key (RS384 algorithm, i.e., SHA384 hash function)
+key = JWTs.JWKRSA(MbedTLS.MD_SHA384, MbedTLS.parse_keyfile(joinpath(@__DIR__, "key", "private.pem")))
+keyid = "Yb09hTDCqmo0UttScFOf37Vzx19jiDlbnzYQYAv6uXk"
 
 smart_config = BackendServicesConfig(; base_url, client_id, key, keyid, scope)
 
