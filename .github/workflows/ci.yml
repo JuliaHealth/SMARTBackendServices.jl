@@ -8,6 +8,20 @@ on:
       - master
     tags: '*'
 jobs:
+  finalize:
+    needs: [test, docs]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo test: ${{ needs.test.result }}
+          echo docs: ${{ needs.docs.result }}
+      - run: exit 1
+        # Make sure that every line (except for the last line) ends in `||`.
+        # Make sure that the last line does NOT end in `||`.
+        if: |
+          (needs.test.result != 'success') ||
+          (needs.docs.result != 'success')
   test:
     name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
     runs-on: ${{ matrix.os }}
