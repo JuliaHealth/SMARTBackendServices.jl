@@ -34,7 +34,7 @@ function _token_endpoint_wellknown(config::BackendServicesConfig)
         # In principle, it should be possible to omit the header
         # (and servers may ignore it anyway)
         # Ref: https://www.hl7.org/fhir/smart-app-launch/conformance.html#using-well-known
-        headers = ("Accept" => "application/json",),
+        headers = ["Accept" => "application/json"],
         # Old servers might still only support the /metadata endpoint (even though its use for SMART capabilities is deprecated)
         # Hence we do not throw an exception if the request fails but try the /metadata endpoint first
         # Ref: https://hl7.org/fhir/smart-app-launch/1.0.0/conformance/index.html#declaring-support-for-oauth2-endpoints
@@ -66,7 +66,7 @@ function _token_endpoint_metadata(config::BackendServicesConfig)
         joinpath(config.base_url, "metadata");
         # We only support FHIR version R4
         # Ref: https://hl7.org/fhir/R4/versioning.html#mt-version
-        headers = ("Accept" => "application/fhir+json; fhirVersion=4.0"),
+        headers = ["Accept" => "application/fhir+json; fhirVersion=4.0"],
         # We throw our own, hopefully more descriptive, exception if necessary
         status_exception = false,
     )
@@ -141,7 +141,7 @@ function backend_services(config::BackendServicesConfig)
     _response = HTTP.request(
         "POST",
         token_endpoint;
-        headers = ("Content-Type" => "application/x-www-form-urlencoded",),
+        headers = ["Content-Type" => "application/x-www-form-urlencoded"],
         body = URIs.escapeuri(body_params),
     )
 
